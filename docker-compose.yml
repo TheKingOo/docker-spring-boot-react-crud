@@ -1,0 +1,41 @@
+version: "3"
+services:
+  springboot-app:
+    image: springbooot-app
+    restart: always
+    build: ./SpringDataRest
+    ports:
+      - "9090:8080"
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_PORT: 3306
+    depends_on:
+      - mysqldb
+    networks:
+      - app-network
+
+  mysqldb:
+    container_name: mysqldb
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: springboot
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - app-network
+
+  react-frontend:
+    image: react-app:latest
+    restart: always
+    build:
+      context: ./SpringDataRest/src/main/webapp/reactjs
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
